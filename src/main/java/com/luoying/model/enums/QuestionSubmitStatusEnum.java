@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
  * 题目提交状态枚举
  */
 public enum QuestionSubmitStatusEnum {
-    //0-待判题、1-判题中、2-通过、3-失败
+    //0-待判题、1-判题中、2-成功、3-失败
     WAITING("待判题", 0),
     RUNNING("判题中", 1),
-    SUCCESS("通过", 2),
+    SUCCESS("成功", 2),
     FAILURE("失败", 3);
 
     private final String text;
