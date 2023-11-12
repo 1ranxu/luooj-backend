@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.luoying.common.ErrorCode;
 import com.luoying.constant.CommonConstant;
 import com.luoying.exception.BusinessException;
+import com.luoying.judge.JudgeService;
 import com.luoying.mapper.QuestionSubmitMapper;
 import com.luoying.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.luoying.model.dto.questionsubmit.QuestionSubmitQueryRequest;
@@ -21,10 +22,12 @@ import com.luoying.service.UserService;
 import com.luoying.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +43,10 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
     @Resource
     private UserService userService;
+
+    @Resource
+    @Lazy
+    private JudgeService judgeService;
 
     /**
      * 题目提交
@@ -78,6 +85,11 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!result) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目提交失败");
         }
+        // 执行判题服务
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmit.getId());
+        });
+
         return questionSubmit.getQuestionId();
     }
 
