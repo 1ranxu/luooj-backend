@@ -89,4 +89,4 @@ cos:
     region: xxx
     bucket: xxx
 codesandbox:
-  type: example
+  type: remote
