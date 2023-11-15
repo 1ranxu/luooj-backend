@@ -31,6 +31,7 @@ public class RemoteCodeSandBox implements CodeSandBox {
             throw new BusinessException(ErrorCode.API_REQUEST_ERROR, "executeCode remoteSandBox error message = " + responseStr);
         }
         System.out.println(responseStr);
-        return null;
+
+        return JSONUtil.toBean(responseStr, ExecuteCodeResponse.class);
     }
 }

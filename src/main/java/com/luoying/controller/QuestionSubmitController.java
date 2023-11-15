@@ -26,9 +26,11 @@ import javax.servlet.http.HttpServletRequest;
  * 题目提交接口
  */
 @RestController
-@RequestMapping("/question_submit")
+// @RequestMapping("/question_submit")
 @Slf4j
+@Deprecated
 public class QuestionSubmitController {
+    /*
 
     @Resource
     private QuestionSubmitService questionSubmitService;
@@ -36,12 +38,14 @@ public class QuestionSubmitController {
     @Resource
     private UserService userService;
 
-    /**
+        */
+/**
      * 提交题目
      *
      * @param questionSubmitAddRequest
      * @param request
-     */
+     */    /*
+
     @PostMapping("/")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
                                                HttpServletRequest request) {
@@ -55,13 +59,15 @@ public class QuestionSubmitController {
     }
 
 
-    /**
+        */
+/**
      * 分页获取题目提交列表（仅管理员和该题目的提交用户可以查看）
      *
      * @param questionSubmitQueryRequest
      * @param request
      * @return
-     */
+     */    /*
+
     @PostMapping("/list/page")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
                                                                        HttpServletRequest request) {
@@ -74,5 +80,6 @@ public class QuestionSubmitController {
                 questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionPage, loginUser));
     }
+    */
 
 }

@@ -11,10 +11,15 @@ import com.luoying.constant.UserConstant;
 import com.luoying.exception.BusinessException;
 import com.luoying.exception.ThrowUtils;
 import com.luoying.model.dto.question.*;
+import com.luoying.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.luoying.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.luoying.model.entity.Question;
+import com.luoying.model.entity.QuestionSubmit;
 import com.luoying.model.entity.User;
+import com.luoying.model.vo.QuestionSubmitVO;
 import com.luoying.model.vo.QuestionVO;
 import com.luoying.service.QuestionService;
+import com.luoying.service.QuestionSubmitService;
 import com.luoying.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +36,8 @@ import java.util.List;
 @RequestMapping("/question")
 @Slf4j
 public class QuestionController {
-
+    @Resource
+    private QuestionSubmitService questionSubmitService;
     @Resource
     private QuestionService questionService;
 
@@ -281,6 +287,46 @@ public class QuestionController {
         }
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
+    }
+
+
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param request
+     */
+    @PostMapping("/question_submit")
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
+                                               HttpServletRequest request) {
+        if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 登录才能提交
+        final User loginUser = userService.getLoginUser(request);
+        long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+        return ResultUtils.success(questionSubmitId);
+    }
+
+
+    /**
+     * 分页获取题目提交列表（仅管理员和该题目的提交用户可以查看）
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/question_submit/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                         HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        User loginUser = userService.getLoginUser(request);
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        Page<QuestionSubmit> questionPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionPage, loginUser));
     }
 
 }

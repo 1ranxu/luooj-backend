@@ -10,6 +10,7 @@ import com.luoying.model.entity.Question;
 import com.luoying.model.enums.JudgeInfoMessagenum;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Java判题策略
@@ -48,7 +49,7 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         Long timeLimit = questionJudgeCconfig.getTimeLimit();
         Long memoryLimit = questionJudgeCconfig.getMemoryLimit();
 
-        Long memory = judgeInfo.getMemory();
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(500L);
         Long time = judgeInfo.getTime();
         if (memory > memoryLimit) {
             judgeInfoMessagenum = JudgeInfoMessagenum.MEMORY_LIMIT_EXCEEDED;
