@@ -3,7 +3,7 @@ package com.luoying.judge;
 import com.luoying.model.vo.QuestionSubmitVO;
 
 /**
- * 怕媒体服务
+ * 判题服务
  */
 public interface JudgeService {
 
